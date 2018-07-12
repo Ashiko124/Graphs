@@ -13,10 +13,11 @@ export class Edge {
  */
 export class Vertex {
   // !!! IMPLEMENT ME
-  constructor(value='Default', pos = {x: -1, y: -1}) {
+  constructor(value='Default', pos = {x: -1, y: -1}, color='white') {
     this.edges = [];
     this.value = value;
     this.pos = pos;
+    this.color  = color;
   }
 }
 
@@ -125,6 +126,28 @@ export class Graph {
    */
   bfs(start) {
     // !!! IMPLEMENT ME
+    const component  = [];
+    const queue = [];
+
+    start.color ='gray';
+    queue.push(start);
+
+    while (queue.length > 0) {
+      const node = queue[0];
+
+      for(let edge of node.edges) {
+        const vertex = edge.destination;
+        if (vertex.color === 'white') {
+          vertex.color = 'gray';
+          queue.push(vertex)
+        }
+      }
+
+      queue.shift();
+      node.color = 'black';
+      component.push(node);
+    }
+    return component;
   }
 
   /**
@@ -132,5 +155,14 @@ export class Graph {
    */
   getConnectedComponents() {
     // !!! IMPLEMENT ME
+    const componentsList = [];
+
+    for (let vertex of this.vertexes) {
+      if(vertex.color === 'white') {
+        const component = this.bfs(vertex);
+        componentsList.push(component);
+      }
+    }
+    return componentsList;
   }
 }
